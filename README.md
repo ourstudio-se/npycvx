@@ -1,7 +1,13 @@
 # NpyCVX
 A small library to connect [numpy](https://numpy.org/) and [CVXOPT](https://cvxopt.org/) together and solves all messy conversions in between.
 
-### Example usage
+## Install
+```bash
+pip install .
+```
+Now you can import `npycvx`
+
+## Example usage
 A simple example when maximizing `w^T x` over the same system of linear inequalities.
 ```python
 
