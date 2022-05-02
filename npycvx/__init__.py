@@ -121,6 +121,8 @@ def solve_boolean_lp(
 def convert_numpy(
     aub: np.ndarray,
     bub: np.ndarray,
+    int_vrs: np.ndarray,
+    bool_vrs: np.ndarray,
     aeq: np.ndarray=None,
     beq: np.ndarray=None,
 ):
@@ -169,8 +171,13 @@ def convert_numpy(
 
     A = cvxopt.matrix(aeq.astype(np.float).T.tolist()) if not aeq is None else None
     b = cvxopt.matrix(beq.astype(np.float).tolist()) if not beq is None else None
-    I = set()  # No variables should be integer ...
-    B = set(i for i in range(dim))  # ... all should be boolean (0 or 1)
+
+    rng_set = set(range(dim))
+    if not set(bool_vrs).union(int_vrs) == rng_set:
+        raise ValueError(f"The union of 'boolean_vars' and 'integer_vars' must contain all indices from 0 - {dim}")
+    
+    I = set(int_vrs.tolist())  # No variables should be integer ...
+    B = set(bool_vrs.tolist()) # ... all should be boolean (0 or 1)
 
     return G, h, A, b, I, B
 
