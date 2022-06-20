@@ -1,22 +1,35 @@
 import numpy as np
-import scipy.optimize
-import nvxopt
+import npycvx
 
+im = 10
 M = np.array([
-    # a b c d x y z
-    [ 0, -1, -1,  0, -1,  1,  0, -2],
-    [ 0, -1,  0, -1, -1,  1,  0, -2],
-    [-1,  0, -1,  0, -1, -1,  0, -3],
-    [-1,  0,  0, -1, -1, -1,  0, -3],
-    [-1,  0, -1,  0,  0,  0,  1, -1],
-    [-1,  0,  0, -1,  0,  0,  1, -1],
-    [ 0, -1,  0, -1,  0,  0,  1, -1]
+    ##b  a  b  c  x   y  t
+    [-4,-2, 1, 1,-2, -2, 0],
+    [ 5, 0, 0, 0, 5,  0, 1],
+    [-2, 0, 0, 0, 0, 10,-1],
+
+    [  0, 0, 0, 0, 0, 0, 1],
+    [-10, 0, 0, 0, 0, 0,-1],
+
+    # [ 3, 0, 0, 0, 0, 0, 1]
 ])
-Aub = -1 * M[:,:-1]
-bub = -1 * M.T[-1]
-obj = -1 * np.ones(Aub.shape[1])
+Aub = M[:,1:]
+bub = M.T[0]
+obj = -1 * np.ones(Aub.shape[1], dtype=np.int)
+obj[0]  = 6
+obj[-1] = 0
 
-_A, _b, _,_ = scipy.optimize._remove_redundancy._remove_redundancy_pivot_dense(Aub, bub)
-
-status, solution = nvxopt.solve_boolean_lp(obj, Aub, bub)
-1
+vrs = np.array(list("axytmn"))
+bool_vrs = np.array([0,1,2,3,4])
+int_vrs = np.array([5])
+status, solution = npycvx.solve_lp(
+    *npycvx.convert_numpy(
+        Aub, 
+        bub,
+        int_vrs,
+        bool_vrs 
+    ),
+    minimize=False,
+    obj=obj
+)
+print(M)

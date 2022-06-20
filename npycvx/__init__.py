@@ -121,8 +121,7 @@ def solve_boolean_lp(
 def convert_numpy(
     aub: np.ndarray,
     bub: np.ndarray,
-    int_vrs: np.ndarray,
-    bool_vrs: np.ndarray,
+    int_vrs: set=set(),
     aeq: np.ndarray=None,
     beq: np.ndarray=None,
 ):
@@ -135,10 +134,11 @@ def convert_numpy(
         (^default)
 
         Parameters
-        aub: Constraint matrix as an ndarray with shape (m, n)
-        bub: Support vector as an ndarray with shape (m,)
-        aeq: Constraint matrix as an ndarray with shape (p, n)
-        beq: Support vector as an ndarray with shape (p,)
+        aub:        Constraint matrix as an ndarray with shape (m, n)
+        bub:        Support vector as an ndarray with shape (m,)
+        int_vrs:    Set of indices of which are integers (all other are assumed boolean)    
+        aeq:        Constraint matrix as an ndarray with shape (p, n)
+        beq:        Support vector as an ndarray with shape (p,)
 
         Returns
             A loaded linprog func with constraints.
@@ -173,13 +173,11 @@ def convert_numpy(
     b = cvxopt.matrix(beq.astype(np.float).tolist()) if not beq is None else None
 
     rng_set = set(range(dim))
+    bool_vrs = rng_set.difference(int_vrs)
     if not set(bool_vrs).union(int_vrs) == rng_set:
         raise ValueError(f"The union of 'boolean_vars' and 'integer_vars' must contain all indices from 0 - {dim}")
-    
-    I = set(int_vrs.tolist())  # No variables should be integer ...
-    B = set(bool_vrs.tolist()) # ... all should be boolean (0 or 1)
 
-    return G, h, A, b, I, B
+    return G, h, A, b, int_vrs, bool_vrs
 
 def solve_lp(G: cvxopt.matrix, h: cvxopt.matrix, A: cvxopt.matrix, b: cvxopt.matrix, I: set, B: set, minimize: bool, obj: np.ndarray) -> tuple:
 
