@@ -3,9 +3,8 @@ A small library to connect [numpy](https://numpy.org/) and [CVXOPT](https://cvxo
 
 ## Install
 ```bash
-pip install .
+pip install npycvx
 ```
-Now you can import `npycvx`
 
 ## Example usage
 A simple example when maximizing `w^T x` over the same system of linear inequalities.
