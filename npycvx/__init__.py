@@ -95,18 +95,18 @@ def solve_boolean_lp(
 
     if minimize:
         # Minimize (default)
-        c = cvxopt.matrix(obj.astype(np.float).tolist())
+        c = cvxopt.matrix(obj.astype(float).tolist())
     else:
         # Maximize -> swap sign on the objective
-        c = cvxopt.matrix((obj * -1).astype(np.float).tolist())
+        c = cvxopt.matrix((obj * -1).astype(float).tolist())
 
     # Constraint format is >=
     # Swap sign on coefficients in constraint matrix and support vector
-    G = cvxopt.matrix((aub * -1).astype(np.float).T.tolist()) if not aub is None else None
-    h = cvxopt.matrix((bub * -1).astype(np.float).tolist()) if not bub is None else None
+    G = cvxopt.matrix((aub * -1).astype(float).T.tolist()) if not aub is None else None
+    h = cvxopt.matrix((bub * -1).astype(float).tolist()) if not bub is None else None
 
-    A = cvxopt.matrix(aeq.astype(np.float).T.tolist()) if not aeq is None else None
-    b = cvxopt.matrix(beq.astype(np.float).tolist()) if not beq is None else None
+    A = cvxopt.matrix(aeq.astype(float).T.tolist()) if not aeq is None else None
+    b = cvxopt.matrix(beq.astype(float).tolist()) if not beq is None else None
     I = set()  # No variables should be integer ...
     B = set(i for i in range(dim))  # ... all should be boolean (0 or 1)
 
@@ -114,7 +114,7 @@ def solve_boolean_lp(
         status, x = cvxopt.glpk.ilp(c, G, h, A, b, I, B)
 
     if status in ['optimal', 'feasible', 'undefined']:
-        x = np.array(x).flatten().astype(np.int16)
+        x = np.array(x).flatten()
 
     return (status, x)
 
@@ -166,11 +166,11 @@ def convert_numpy(
 
     # Constraint format is >=
     # Swap sign on coefficients in constraint matrix and support vector
-    G = cvxopt.matrix((aub * -1).astype(np.float).T.tolist()) if not aub is None else None
-    h = cvxopt.matrix((bub * -1).astype(np.float).tolist()) if not bub is None else None
+    G = cvxopt.matrix((aub * -1).astype(float).T.tolist()) if not aub is None else None
+    h = cvxopt.matrix((bub * -1).astype(float).tolist()) if not bub is None else None
 
-    A = cvxopt.matrix(aeq.astype(np.float).T.tolist()) if not aeq is None else None
-    b = cvxopt.matrix(beq.astype(np.float).tolist()) if not beq is None else None
+    A = cvxopt.matrix(aeq.astype(float).T.tolist()) if not aeq is None else None
+    b = cvxopt.matrix(beq.astype(float).tolist()) if not beq is None else None
 
     rng_set = set(range(dim))
     bool_vrs = rng_set.difference(int_vrs)
@@ -231,15 +231,15 @@ def solve_lp(G: cvxopt.matrix, h: cvxopt.matrix, A: cvxopt.matrix, b: cvxopt.mat
 
     if minimize:
         # Minimize (default)
-        c = cvxopt.matrix(obj.astype(np.float).tolist())
+        c = cvxopt.matrix(obj.astype(float).tolist())
     else:
         # Maximize -> swap sign on the objective
-        c = cvxopt.matrix((obj * -1).astype(np.float).tolist())
+        c = cvxopt.matrix((obj * -1).astype(float).tolist())
 
     with redirect_stdout2devnull():
         status, x = cvxopt.glpk.ilp(c, G, h, A, b, I, B)
 
     if status in ['optimal', 'feasible', 'undefined']:
-        x = np.array(x).flatten().astype(np.int16)
+        x = np.array(x).flatten()
 
     return (status, x)
