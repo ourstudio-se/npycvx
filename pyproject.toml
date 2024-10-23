@@ -1,3 +1,16 @@
+[tool.poetry]
+name = "npycvx"
+version = "0.0.3"
+description = "Converter from numpy to cvxopt."
+authors = ["znittzel <rikard@ourstudio.se>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["cvxopt", "glpk", "solver", "ilp", "integer linear programming"]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
